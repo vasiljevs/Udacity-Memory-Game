@@ -20,17 +20,17 @@ function createGame() {
   deck.innerHTML = '';
 
   /**
-   * Create HTML for each card and add to Document Fragment
+   * Create the HTML for each card and add to Document Fragment
    */
   for (let x = 0; x < shuffledCards.length; x++) {
     const li = document.createElement('li');
     const i = document.createElement('i');
 
     // Get classes for the symbol to be displayed on the card
-    const cardClasses = shuffledCards[x].firstElementChild.className;
+    const cardClasses = shuffledCards[x].firstElementChild.classList;
 
-    li.className = 'card';
-    i.className = cardClasses;
+    li.classList.add('card');
+    i.classList.add(...cardClasses);
 
     li.appendChild(i);
     fragment.appendChild(li);
