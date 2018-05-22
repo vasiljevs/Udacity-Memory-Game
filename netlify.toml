@@ -15,8 +15,8 @@ proxy_hide_header = "X-Powered-By"
 
 [build.environment]
 
-NODE_VERSION = "8"
-YARN_VERSION = "0.28.4"
+NODE_VERSION = "10"
+YARN_VERSION = "1.6.0"
 
 [[redirects]]
 from = "http://memorygameproject.netlify.com"
