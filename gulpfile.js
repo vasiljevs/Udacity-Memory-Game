@@ -1,12 +1,20 @@
 const autoprefixer = require('gulp-autoprefixer');
 const babel = require('gulp-babel');
 const cleanCSS = require('gulp-clean-css');
-const del = require('del');
 const gulp = require('gulp');
 const plumber = require('gulp-plumber');
 const rename = require('gulp-rename');
 const sourcemaps = require('gulp-sourcemaps');
 const uglify = require('gulp-uglify');
+const browserSync = require('browser-sync').create();
+
+gulp.task('browser-sync', () => {
+  browserSync.init({
+    server: {
+      baseDir: './',
+    },
+  });
+});
 
 // Styles
 gulp.task('styles', () =>
@@ -65,12 +73,13 @@ gulp.task('minify-js', () =>
 
 // Build task
 gulp.task('build', ['styles', 'minify-js'], () => {
-  console.log('Building CSS Styles.');
+  console.log('Building Project.');
 });
 
 // Watch task runner
-gulp.task('watch', ['build'], () => {
+gulp.task('watch', ['browser-sync', 'build'], () => {
   console.log('Starting watch task');
-  require('./server.js');
-  gulp.watch('css/app.css', ['styles']), gulp.watch('js/app.js', ['minify-js']);
+  gulp.watch('index.html').on('change', browserSync.reload);
+  gulp.watch('css/app.css', ['styles']).on('change', browserSync.reload);
+  gulp.watch('js/app.js', ['minify-js']).on('change', browserSync.reload);
 });
