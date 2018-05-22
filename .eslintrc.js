@@ -40,13 +40,7 @@ module.exports = {
     "func-names": 0,
     "space-before-function-paren": 0,
     "no-use-before-define": 0,
-    "comma-dangle": ["error", {
-        "arrays": "never",
-        "objects": "always",
-        "imports": "never",
-        "exports": "never",
-        "functions": "ignore"
-    }],
+    "comma-dangle": 0,
     "max-len": 0,
     "import/extensions": 0,
     "no-underscore-dangle": 0,
