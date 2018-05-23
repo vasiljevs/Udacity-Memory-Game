@@ -23,6 +23,12 @@ body {
   font-family: 'Coda', cursive;
 }
 
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
 .container {
   display: flex;
   justify-content: center;
@@ -58,9 +64,8 @@ h1 {
   width: 125px;
   background: #2e3d49;
   font-size: 0;
-  color: #ffffff;
+  color: #fff;
   border-radius: 8px;
-  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -70,16 +75,19 @@ h1 {
 .deck .card.open {
   transform: rotateY(0);
   background: #02b3e4;
-  cursor: default;
-}
-
-.deck .card.show {
-  font-size: 33px;
 }
 
 .deck .card.match {
-  cursor: default;
   background: #02ccba;
+}
+
+.card.open, 
+.card.match {
+  cursor: default;
+}
+
+.card.show, 
+.card.match {
   font-size: 33px;
 }
 
@@ -88,7 +96,10 @@ h1 {
   transform: translate3d(0, 0, 0);
 }
 
-/* Keyframes for Animations */
+/* 
+ * Keyframes for Animations 
+ */
+
 @keyframes shake {
   10%, 90% {
     transform: translate3d(-1px, 0, 0);
@@ -118,28 +129,30 @@ h1 {
 }
 
 .score-panel .stars {
-  margin: 0;
-  padding: 0;
-  display: inline-block;
-  margin: 0 5px 0 0;
+  margin-right: 5px;
 }
 
-.score-panel .stars li {
-  list-style: none;
+.stars,
+.stars li {
   display: inline-block;
 }
 
 .score-panel .restart {
   float: right;
+}
+
+.card,
+.restart {
   cursor: pointer;
 }
 
-/* Responsive Queries */
-@media screen and (max-width: 1280px) {
+/* 
+ * Responsive Queries 
+ */
 
-}
+@media screen and (max-width: 80em) {}
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 47.9375em) {
   .score-panel {
     width: 310px;
   }
