@@ -3,11 +3,12 @@ document.addEventListener('DOMContentLoaded', () => {
   * Create a array that holds all of your cards
   */
   const cards = [...document.querySelectorAll('.card')];
+
   // Create global variables
   const moveCounter = document.querySelector('.moves');
   const stars = document.querySelector('.stars');
   let moves = 0;
-  let matchedCards = 0;
+  let matchedCardPairs = 0;
   let openedCards = [];
 
   /*
@@ -29,10 +30,11 @@ document.addEventListener('DOMContentLoaded', () => {
      * Create the HTML for each card and add to the Document Fragment
      */
     for (let x = 0; x < shuffledCards.length; x++) {
+      // Create new HTML elements that will be used
       const li = document.createElement('li');
       const i = document.createElement('i');
 
-      // Get classes for the symbol to be displayed on the card
+      // Get DOMList of classes to be displayed on the card
       const cardClasses = shuffledCards[x].firstElementChild.classList;
 
       // Apply the classes to each card
@@ -83,13 +85,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     newCards.forEach(card =>
       card.addEventListener('click', e => {
-        // Only handle the click event for "li" elements
-        if (e.target.nodeName === 'LI') {
+        const isCardClosed = !e.target.className.includes('open');
+
+        // Only handle the click event for "li" elements that are closed
+        if (e.target.nodeName === 'LI' && isCardClosed && openedCards.length < 2) {
           showCard(e);
-          addCard(e);
+          addCardToOpenedCards(e);
 
           if (openedCards.length === 2) {
-            checkCards();
+            checkOpenedCards();
           }
         }
       }),
@@ -101,10 +105,11 @@ document.addEventListener('DOMContentLoaded', () => {
    */
   function showCard(e) {
     // Grab the classes of the card that has been clicked
-    const cardClasses = e.target.className;
+    const isCardShowing = e.target.className.includes('show');
+    const isCardOpen = e.target.className.includes('open');
 
     // Check if the card has been opened, if not, open the card
-    if (!cardClasses.includes('show') && !cardClasses.includes('open')) {
+    if (!isCardShowing && !isCardOpen) {
       e.target.classList.add('show', 'open');
       countMoves();
     }
@@ -113,74 +118,93 @@ document.addEventListener('DOMContentLoaded', () => {
   /**
    * Add card to a array of all open cards
    */
-  function addCard(e) {
+  function addCardToOpenedCards(e) {
     const card = e.target;
 
     openedCards.push(card);
   }
 
   /**
-   * Check if the cards currently selected match
+   * Check if the currently opened cards match
    */
-  function checkCards() {
+  function checkOpenedCards() {
     // Get the descriptive classname for both cards (fa-bolt, fa-cube)
-    const firstCard = openedCards[0].children[0].className.split(' ')[1];
-    const secondCard = openedCards[1].children[0].className.split(' ')[1];
+    const firstOpenCard = openedCards[0].children[0].className.split(' ')[1];
+    const secondOpenCard = openedCards[1].children[0].className.split(' ')[1];
 
     // Allow for a delay so that both cards are showed to the user
     setTimeout(() => {
-      if (firstCard === secondCard) {
-        cardsMatched();
+      if (firstOpenCard === secondOpenCard) {
+        matchedPair();
       } else {
-        cardsNotMatched();
+        pairNotMatched();
       }
-    }, 600);
+    }, 700);
   }
 
   /**
    * Count moves each time card is clicked
    */
   function countMoves() {
+    const amountOfStars = stars.children.length;
+
     moves++;
     moveCounter.textContent = moves;
 
-    // if (moves > 10) {
-    //   stars.removeChild(stars.childNodes[0]);
-    // } else if (moves > 20) {
-    //   stars.removeChild(stars.childNodes[0]);
-    // } else {
-    //   stars.removeChild(stars.childNodes[0]);
-    // }
+    // Remove stars above a certain score threshold
+    if (moves >= 14 && amountOfStars === 3) {
+      stars.removeChild(stars.childNodes[0]);
+    } else if (moves >= 20 && amountOfStars === 2) {
+      stars.removeChild(stars.childNodes[0]);
+    }
   }
 
   /**
-   * If the cards match, lock them. Also count each group of cards that are matched
+   * If the cards match, lock them.
+   * Reset currently opened card "tracking"
+   * Count the matched pairs
    */
-  function cardsMatched() {
+  function matchedPair() {
     openedCards.forEach(card => {
-      card.classList.add('matched');
+      card.classList.add('match');
     });
-    // Reset current selected cards "tracking"
+
     openedCards = [];
-    // Count the amount of matched pairs
-    matchedCards++;
+    matchedCardPairs++;
+
+    // Check game winning condition
+    if (matchedCardPairs === 8) {
+      gameWon();
+    }
   }
 
   /**
-   * If the cards do not match, hide them and reset opened cards array
+   * If the cards do not match, hide them and reset opened cards
+   * Reset currently opened card "tracking"
    */
-  function cardsNotMatched() {
+  function pairNotMatched() {
     openedCards.forEach(card => {
-      card.classList.remove('show', 'open');
+      card.classList.add('noMatch');
+
+      // Allow for time so that "noMatch" animation completes
+      setTimeout(() => {
+        card.classList.remove('show', 'open', 'noMatch');
+      }, 600);
     });
+
     openedCards = [];
   }
 
+  // Reset global variables
   function resetGame() {
-    // Reset global variables
     moves = 0;
-    matchedCards = 0;
+    matchedCardPairs = 0;
     openedCards = [];
+  }
+
+  // If game won, alert the user
+  function gameWon() {
+    alert(`Game won. ${matchedCardPairs} Matched pairs with a score of ${moves}.`);
   }
 
   /**
@@ -192,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /**
-   * Start the game on page load
+   * Starts the game on page load
    */
   createGame();
 });
