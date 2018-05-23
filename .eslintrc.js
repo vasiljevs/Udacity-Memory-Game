@@ -34,6 +34,7 @@ module.exports = {
     "import": 0,
     "no-plusplus": 0,
     "no-param-reassign": 0,
+    "no-alert": 0,
     "class-methods-use-this": ["error", {
       "exceptMethods": ["render"]
     }],
